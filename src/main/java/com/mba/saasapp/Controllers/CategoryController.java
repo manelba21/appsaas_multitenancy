@@ -7,6 +7,8 @@ import com.mba.saasapp.services.CategoryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +21,15 @@ public class CategoryController {
 
      @PostMapping
         public ResponseEntity<Void> createCategory(
+             @RequestBody
                 @Valid
                 @NotNull(message = "Category ID cannot be null")
                 final CategoryRequest request
         ) {
-            this.service.create(request);
-            return ResponseEntity.ok().build();
+
+         this.service.create(request);
+         return ResponseEntity.status(HttpStatus.CREATED).build();
+
         }
 
         @PutMapping("/{category-id}")
@@ -37,7 +42,7 @@ public class CategoryController {
                 @NotNull(message = "Category ID cannot be null")
                 final String id
         ) {
-            this.service.update(id, request);
+            this.service.update(id, request) ;
             return ResponseEntity.accepted().build();
         }
 

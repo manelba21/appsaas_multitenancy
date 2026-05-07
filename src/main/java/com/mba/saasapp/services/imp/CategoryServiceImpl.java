@@ -1,6 +1,7 @@
 package com.mba.saasapp.services.imp;
 
 import com.mba.saasapp.common.PageResponse;
+import com.mba.saasapp.config.TenantContext;
 import com.mba.saasapp.entities.Category;
 import com.mba.saasapp.entities.requests.CategoryRequest;
 import com.mba.saasapp.entities.responses.CategoryResponse;
@@ -8,7 +9,8 @@ import com.mba.saasapp.mappers.CategoryMapper;
 import com.mba.saasapp.repositories.CategoryRepository;
 import com.mba.saasapp.services.CategoryService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Id;
+
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CategoryServiceImpl  implements CategoryService {
 
 
@@ -31,11 +34,13 @@ public class CategoryServiceImpl  implements CategoryService {
        private final CategoryMapper categoryMapper;
 
     @Override
+
     public void create(final CategoryRequest request) {
         // check if category already exists
         checkIfCategoryAlreadyExistsByName(request.getName());
 
         final Category entity = this.categoryMapper.toEntity(request);
+
         this.categoryRepository.save(entity);
     }
 
