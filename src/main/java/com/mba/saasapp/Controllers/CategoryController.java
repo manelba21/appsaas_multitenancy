@@ -21,8 +21,8 @@ public class CategoryController {
 
      @PostMapping
         public ResponseEntity<Void> createCategory(
+             @Valid
              @RequestBody
-                @Valid
                 @NotNull(message = "Category ID cannot be null")
                 final CategoryRequest request
         ) {

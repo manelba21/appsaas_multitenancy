@@ -5,9 +5,11 @@ import com.mba.saasapp.config.TenantContext;
 import com.mba.saasapp.entities.Category;
 import com.mba.saasapp.entities.requests.CategoryRequest;
 import com.mba.saasapp.entities.responses.CategoryResponse;
+import com.mba.saasapp.exceptions.DuplicateResourceException;
 import com.mba.saasapp.mappers.CategoryMapper;
 import com.mba.saasapp.repositories.CategoryRepository;
 import com.mba.saasapp.services.CategoryService;
+import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -90,7 +92,7 @@ public class CategoryServiceImpl  implements CategoryService {
 
         if (category.isPresent()) {
             log.debug("Category already exists");
-            throw new RuntimeException("Category already exists"); // we will use custom exception later
+            throw new DuplicateResourceException("Category already exists"); // we will use custom exception later
         }
     }
 }

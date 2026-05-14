@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryMapper {
 
-
-
     public Category toEntity(final CategoryRequest request) {
         return Category.builder()
                 .name(request.getName())

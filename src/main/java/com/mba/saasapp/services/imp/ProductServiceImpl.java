@@ -4,6 +4,7 @@ import com.mba.saasapp.common.PageResponse;
 import com.mba.saasapp.entities.Product;
 import com.mba.saasapp.entities.requests.ProductRequest;
 import com.mba.saasapp.entities.responses.ProductResponse;
+import com.mba.saasapp.exceptions.DuplicateResourceException;
 import com.mba.saasapp.mappers.ProductMapper;
 import com.mba.saasapp.repositories.CategoryRepository;
 import com.mba.saasapp.repositories.ProductRepository;
@@ -102,7 +103,7 @@ import java.util.Optional;
 
                     if (product.isPresent()) {
                         log.debug("Product already exists");
-                        throw new RuntimeException("Product already exists");
+                        throw new DuplicateResourceException("Product already exists");
                     }
                 }
 
