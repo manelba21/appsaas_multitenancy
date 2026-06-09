@@ -25,23 +25,13 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 
 
-@FilterDef(
-        name = "tenantFilter",
-        parameters = @ParamDef(name = "tenantId", type = String.class),
-        defaultCondition = "tenant_id = :tenantId"
-)
-@Filter(name = "tenantFilter")
+
 public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
-
-    @Column(name = "tenant_id",  nullable = false)
-    private String tenantId;
-
-
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -52,7 +42,7 @@ public abstract class AbstractEntity {
     private LocalDateTime updatedAt;
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false, nullable = false)
+    @Column(name = "created_by", nullable = true)
     private String createdBy;
 
     @LastModifiedBy
@@ -68,13 +58,8 @@ public abstract class AbstractEntity {
             this.deleted = Boolean.FALSE;
         }
         // TO DO / THIS HAS TO BE DELETED ONCE SECURITY IS IMPLEMENTED
-        if (this.createdBy == null ){
-            this.createdBy = "SYSTEM" ;
-        }
 
-        if (this.tenantId == null) {
-            this.tenantId = TenantContext.getCurrentTenant();
-        }
+
     }
 }
 

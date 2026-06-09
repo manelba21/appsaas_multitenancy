@@ -4,6 +4,7 @@ import com.mba.saasapp.common.PageResponse;
 import com.mba.saasapp.entities.requests.CategoryRequest;
 import com.mba.saasapp.entities.responses.CategoryResponse;
 import com.mba.saasapp.services.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/categories")
 @RequiredArgsConstructor
+@Tag(name = "Category", description = "Category API")
+
 public class CategoryController {
 
     private final CategoryService service ;

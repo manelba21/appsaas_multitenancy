@@ -6,6 +6,7 @@ import com.mba.saasapp.entities.requests.ProductRequest;
 import com.mba.saasapp.entities.responses.ProductResponse;
 import com.mba.saasapp.services.CategoryService;
 import com.mba.saasapp.services.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
+@Tag(name = "Product", description = "Product API")
+
 public class ProductController {
 
 

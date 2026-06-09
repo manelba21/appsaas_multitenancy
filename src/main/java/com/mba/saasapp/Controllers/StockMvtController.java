@@ -4,6 +4,7 @@ import com.mba.saasapp.common.PageResponse;
 import com.mba.saasapp.entities.requests.StockMvtRequest;
 import com.mba.saasapp.entities.responses.StockMvtResponse;
 import com.mba.saasapp.services.MvtStockService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/stocks")
 @RequiredArgsConstructor
+@Tag(name = "StockMvt", description = "StockMvt API")
 public class StockMvtController {
 
 

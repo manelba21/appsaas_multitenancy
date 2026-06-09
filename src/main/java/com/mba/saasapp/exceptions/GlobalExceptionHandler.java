@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.method.MethodValidationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.method.annotation.AsyncTaskMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
@@ -36,7 +39,7 @@ public class GlobalExceptionHandler   {
 
         final List<ErrorResponse.ValidationError> errors = new ArrayList<>();
         ex.getBindingResult()
-                .getAllErrors()
+                .getFieldErrors()
                 .forEach(error -> {
                     final String fieldName = ((FieldError) error).getField();
                     final String errorCode = error.getDefaultMessage();
@@ -76,12 +79,12 @@ public class GlobalExceptionHandler   {
                 .body(errorResponse);
     }
 
-    @ExceptionHandler(value = EntityNotFoundException.class)
+    @ExceptionHandler(value = {EntityNotFoundException.class ,  UsernameNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleException(
             final EntityNotFoundException ex,
             final HttpServletRequest request
     ) {
-        log.error("Entity not found", ex);
+
 
         final ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("NOT_FOUND")
@@ -91,12 +94,38 @@ public class GlobalExceptionHandler   {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleException(
+            final BadCredentialsException ex,
+            final HttpServletRequest request
+    ) {
+
+        final ErrorResponse errorResponse = ErrorResponse.builder()
+                .message("Login and / or password are incorrect.")
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(errorResponse);
+    }
 
     private HttpStatus getHttpStatus(BusinessException ex) {
         if (ex  instanceof  DuplicateResourceException){
 
             return HttpStatus.CONFLICT ;
-        }  else
+        }
+      else   if (ex instanceof  UnauthorizedException){
+
+             return HttpStatus.UNAUTHORIZED ;
+        }
+        else if (ex instanceof TenantProvisioningException) {
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+     else if (ex instanceof InvalidRequestException)
+
+    { return HttpStatus.BAD_REQUEST ;
+    }
+        else
             return  HttpStatus.BAD_REQUEST ;
 
     }
