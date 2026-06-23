@@ -53,7 +53,7 @@ public class SecurityConfig {
                         // public routes
                         .requestMatchers(PUBLIC_URLS).permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                      //  .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
 
                         .requestMatchers("/api/v1/tenants/approve/**").permitAll()
                         .requestMatchers("/api/v1/tenants/**").hasRole("ADMINISTRATOR")

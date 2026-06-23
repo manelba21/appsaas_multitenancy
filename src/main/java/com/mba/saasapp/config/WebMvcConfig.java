@@ -16,6 +16,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(tenantInterceptor).addPathPatterns("/api/v1/**");
+        registry.addInterceptor(tenantInterceptor)
+                .addPathPatterns("/api/v1/**")
+                .excludePathPatterns("/api/v1/tenants/approve/**"); // 👈 Exclut cette route du filtre
     }
 }

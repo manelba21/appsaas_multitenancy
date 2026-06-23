@@ -24,6 +24,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 import static com.mba.saasapp.entities.UserRole.ROLE_COMPANY_ADMIN;
 
 @Service
@@ -38,7 +40,7 @@ public class TenantServiceImpl   implements TenantService {
     private final PasswordEncoder passwordEncoder ;
     private final UserRepository userRepository ;
      private final ProvisionningService provisionningService ;
-
+    @Transactional
     public void registerTenant(RegisterTenantRequest request) {
         // 1. Vérifications d'existence
         if (this.tenantRepository.existsByCompanyCode(request.getCompanyCode())) {
@@ -61,30 +63,27 @@ public class TenantServiceImpl   implements TenantService {
 
         this.provisionningService.provisionTenant(savedTenant);
     }
-
-
-    @Transactional
+@Transactional
     public void approveTenant(String tenantId) {
         Tenant tenant = this.tenantRepository.findById(tenantId)
                 .orElseThrow(() -> new EntityNotFoundException("Tenant does not exist"));
 
-        // Étape 1 : Activer immédiatement le tenant pour débloquer les accès
-        tenant.setStatus(TenantStatus.ACTIVE);
-        this.tenantRepository.save(tenant);
+
+        this.tenantRepository.updateStatus(tenantId, TenantStatus.ACTIVE);
 
         try {
-            // Étape 2 : Provisionner le schéma uniquement s'il n'existe pas
+
+            tenant.setUsers(new java.util.ArrayList<>());
+
+
             this.provisionningService.provisionTenant(tenant);
 
-            // Étape 3 : Créer l'admin (ajoutez un check d'existence à l'intérieur de cette méthode)
-            createInitialAdminUser(tenant);
-
         } catch (Exception e) {
-            // En cas d'échec d'une sous-étape, on remet le statut à PENDING
             rollbackTenantStatus(tenant);
             throw e;
         }
     }
+
 
     private void rollbackTenantStatus(Tenant tenant) {
         tenant.setStatus(TenantStatus.PENDING);
@@ -102,7 +101,9 @@ public class TenantServiceImpl   implements TenantService {
             throw new InvalidRequestException("Tenant is not pending");
         }
 
+
         tenant.setStatus(TenantStatus.ACTIVE);
+
         this.tenantRepository.save(tenant);
 
     }

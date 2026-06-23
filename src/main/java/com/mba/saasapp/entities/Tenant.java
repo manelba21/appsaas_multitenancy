@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.List;
+
 import static jakarta.persistence.EnumType.STRING;
 @Getter
 @Setter
@@ -51,6 +53,10 @@ public class Tenant extends AbstractEntity {
           @Enumerated(EnumType.STRING)
         @Column(name = "admin_role") // Ce nom doit correspondre à votre colonne en BDD
        private UserRole adminRole;
+
+    @OneToMany(mappedBy = "tenant", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
+    private List<User> users;
+
 
 }
 
